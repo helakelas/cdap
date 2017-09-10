@@ -245,6 +245,7 @@ export default class FilterDirective extends Component {
               <a
                 href="http://commons.apache.org/proper/commons-jexl/"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 {T.translate(`${PREFIX}.customconditiontooltiplink`)}
               </a>

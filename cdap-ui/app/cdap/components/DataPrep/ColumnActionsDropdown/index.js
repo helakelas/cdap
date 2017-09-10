@@ -24,30 +24,9 @@ import Mousetrap from 'mousetrap';
 import isEqual from 'lodash/isEqual';
 import DataPrepStore from 'components/DataPrep/store';
 import ScrollableList from 'components/ScrollableList';
-
-// Directives List
-import ParseDirective from 'components/DataPrep/Directives/Parse';
-import FillNullOrEmpty from 'components/DataPrep/Directives/FillNullOrEmpty';
-import DropColumnDirective from 'components/DataPrep/Directives/DropColumn';
-import KeepColumnDirective from 'components/DataPrep/Directives/KeepColumn';
-import SwapColumnsDirective from 'components/DataPrep/Directives/SwapColumns';
-import MergeColumnsDirective from 'components/DataPrep/Directives/MergeColumns';
-import FilterDirective from 'components/DataPrep/Directives/Filter';
-import FindAndReplaceDirective from 'components/DataPrep/Directives/FindAndReplace';
-import CopyColumnDirective from 'components/DataPrep/Directives/CopyColumn';
+import * as DirectivesList from 'components/DataPrep/ColumnActionsDropdown/DirectivesList';
+// No idea why I can't lazy load this. Need to investigate.
 import ExtractFields from 'components/DataPrep/Directives/ExtractFields';
-import Format from 'components/DataPrep/Directives/Format';
-import Calculate from 'components/DataPrep/Directives/Calculate';
-import Explode from 'components/DataPrep/Directives/Explode';
-import MaskData from 'components/DataPrep/Directives/MaskData';
-import EncodeDecode from 'components/DataPrep/Directives/EncodeDecode';
-import Decode from 'components/DataPrep/Directives/Decode';
-import SetCharacterEncoding from 'components/DataPrep/Directives/SetCharacterEncoding';
-import MarkAsError from 'components/DataPrep/Directives/MarkAsError';
-import CustomTransform from 'components/DataPrep/Directives/CustomTransform';
-import DefineVariableDirective from 'components/DataPrep/Directives/DefineVariable';
-import SetCounterDirective from 'components/DataPrep/Directives/SetCounter';
-
 import ee from 'event-emitter';
 
 require('./ColumnActionsDropdown.scss');
@@ -78,7 +57,7 @@ export default class ColumnActionsDropdown extends Component {
     this.directives = [
       {
         id: shortid.generate(),
-        tag: ParseDirective,
+        tag: DirectivesList.ParseDirective,
         requiredColCount: 1
       },
       {
@@ -86,7 +65,7 @@ export default class ColumnActionsDropdown extends Component {
       },
       {
         id: shortid.generate(),
-        tag: SetCharacterEncoding,
+        tag: DirectivesList.SetCharacterEncoding,
         requiredColCount: 1
       },
       {
@@ -94,38 +73,16 @@ export default class ColumnActionsDropdown extends Component {
       },
       {
         id: shortid.generate(),
-        tag: Format,
+        tag: DirectivesList.Format,
         requiredColCount: 1
       },
       {
         id: shortid.generate(),
-        tag: Calculate,
+        tag: DirectivesList.Calculate,
         requiredColCount: 1
       },
       {
-        tag: CustomTransform,
-        requiredColCount: 1
-      },
-      {
-        tag: 'divider'
-      },
-      {
-        id: shortid.generate(),
-        tag: FilterDirective,
-        requiredColCount: 1
-      },
-      {
-        id: shortid.generate(),
-        tag: MarkAsError
-      },
-      {
-        id: shortid.generate(),
-        tag: FindAndReplaceDirective,
-        requiredColCount: 1
-      },
-      {
-        id: shortid.generate(),
-        tag: FillNullOrEmpty,
+        tag: DirectivesList.CustomTransform,
         requiredColCount: 1
       },
       {
@@ -133,27 +90,49 @@ export default class ColumnActionsDropdown extends Component {
       },
       {
         id: shortid.generate(),
-        tag: CopyColumnDirective,
+        tag: DirectivesList.FilterDirective,
         requiredColCount: 1
       },
       {
         id: shortid.generate(),
-        tag: DropColumnDirective,
+        tag: DirectivesList.MarkAsError
+      },
+      {
+        id: shortid.generate(),
+        tag: DirectivesList.FindAndReplaceDirective,
+        requiredColCount: 1
+      },
+      {
+        id: shortid.generate(),
+        tag: DirectivesList.FillNullOrEmpty,
+        requiredColCount: 1
+      },
+      {
+        tag: 'divider'
+      },
+      {
+        id: shortid.generate(),
+        tag: DirectivesList.CopyColumnDirective,
+        requiredColCount: 1
+      },
+      {
+        id: shortid.generate(),
+        tag: DirectivesList.DropColumnDirective,
         requiredColCount: 0
       },
       {
         id: shortid.generate(),
-        tag: KeepColumnDirective,
+        tag: DirectivesList.KeepColumnDirective,
         requiredColCount: 0
       },
       {
         id: shortid.generate(),
-        tag: MergeColumnsDirective,
+        tag: DirectivesList.MergeColumnsDirective,
         requiredColCount: 2
       },
       {
         id: shortid.generate(),
-        tag: SwapColumnsDirective,
+        tag: DirectivesList.SwapColumnsDirective,
         requiredColCount: 2
       },
       {
@@ -166,17 +145,17 @@ export default class ColumnActionsDropdown extends Component {
       },
       {
         id: shortid.generate(),
-        tag: Explode,
+        tag: DirectivesList.Explode,
         requiredColCount: 0
       },
       {
         id: shortid.generate(),
-        tag: DefineVariableDirective,
+        tag: DirectivesList.DefineVariableDirective,
         requiredColCount: 1
       },
       {
         id: shortid.generate(),
-        tag: SetCounterDirective,
+        tag: DirectivesList.SetCounterDirective,
         requiredColCount: 1
       },
       {
@@ -184,16 +163,16 @@ export default class ColumnActionsDropdown extends Component {
       },
       {
         id: shortid.generate(),
-        tag: MaskData
+        tag: DirectivesList.MaskData
       },
       {
         id: shortid.generate(),
-        tag: EncodeDecode,
+        tag: DirectivesList.EncodeDecode,
         requiredColCount: 1
       },
       {
         id: shortid.generate(),
-        tag: Decode,
+        tag: DirectivesList.Decode,
         requiredColCount: 1
       }
     ];

@@ -16,9 +16,8 @@
 
 import React, { Component, PropTypes } from 'react';
 import 'whatwg-fetch';
-import CaskVideo from 'components/CaskVideo';
-require('./SplashScreen.scss');
-
+import Loadable from 'react-loadable';
+import LoadingSVGCentered from 'components/LoadingSVGCentered';
 import Card from 'components/Card';
 import MyUserStoreApi from 'api/userstore';
 import T from 'i18n-react';
@@ -27,6 +26,13 @@ import VersionStore from 'services/VersionStore';
 import VersionActions from 'services/VersionStore/VersionActions';
 import {objectQuery} from 'services/helpers';
 import cookie from 'react-cookie';
+
+require('./SplashScreen.scss');
+
+const CaskVideo = Loadable({
+  loader: () => import(/* webpackChunkName: "CaskVideoPlayer" */'components/CaskVideo'),
+  loading: LoadingSVGCentered
+});
 
 class SplashScreen extends Component {
   constructor(props) {
