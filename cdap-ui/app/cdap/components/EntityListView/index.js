@@ -389,5 +389,6 @@ EntityListView.propTypes = {
   match: PropTypes.object,
   location: PropTypes.object,
   history: PropTypes.object,
-  pathname: PropTypes.string
+  pathname: PropTypes.string,
+  currentPage: PropTypes.string
 };

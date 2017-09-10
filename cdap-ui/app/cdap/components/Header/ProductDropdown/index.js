@@ -180,6 +180,7 @@ export default class ProductDropdown extends Component {
             <DropdownItem tag="li">
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="http://cask.co/products/cdap/"
               >
                 {T.translate('features.Navbar.ProductDropdown.prodWebsiteLabel')}
@@ -188,6 +189,7 @@ export default class ProductDropdown extends Component {
             <DropdownItem tag="li">
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="http://cask.co/community"
               >
                 {T.translate('features.Navbar.ProductDropdown.supportLabel')}
@@ -197,6 +199,7 @@ export default class ProductDropdown extends Component {
               <a
                 href={docsUrl}
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 {T.translate('features.Navbar.ProductDropdown.documentationLabel')}
               </a>

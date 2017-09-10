@@ -97,7 +97,7 @@ export default class ArraySchemaRow extends Component {
       this.setState({error});
       return;
     }
-    this.parsedType = this.state.displayType.nullable ? [cloneDeep(itemsState): 'null'] : cloneDeep(itemsState);
+    this.parsedType = this.state.displayType.nullable ? [cloneDeep(itemsState), 'null'] : cloneDeep(itemsState);
     this.updateParent();
   }
   updateParent() {

@@ -148,13 +148,22 @@ class SplashScreen extends Component {
                 </div>
 
                 <div className={'group'}>
-                  <a className="spash-screen-btn" target="_blank" href={`http://docs.cask.co/cdap/${this.state.version}/en/index.html`}>
+                  <a
+                    className="spash-screen-btn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`http://docs.cask.co/cdap/${this.state.version}/en/index.html`}
+                  >
                     <div className="btn btn-secondary">
                       <span className="fa fa-book btn-icon"></span>{T.translate('features.SplashScreen.buttons.getStarted')}
                     </div>
                   </a>
 
-                  <a target="_blank" href="http://cask.co/company/contact/#mailing-list">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="http://cask.co/company/contact/#mailing-list"
+                  >
                     <div
                       className={'btn btn-secondary spash-screen-btn'}
                     >
