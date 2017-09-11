@@ -107,7 +107,7 @@ export default class Market extends Component {
       <ConfigurableTab
         tabConfig={this.state.tabConfig}
         onTabClick={this.handleTabClick.bind(this)}
-        activeTab={this.state.activeTab.toString()}
+        activeTab={this.state.activeTab}
       />
     );
   }
