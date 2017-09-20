@@ -14,10 +14,8 @@
  * the License.
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import 'whatwg-fetch';
-import Loadable from 'react-loadable';
-import LoadingSVGCentered from 'components/LoadingSVGCentered';
 import Card from 'components/Card';
 import MyUserStoreApi from 'api/userstore';
 import T from 'i18n-react';
@@ -29,11 +27,6 @@ import cookie from 'react-cookie';
 
 require('./SplashScreen.scss');
 
-const CaskVideo = Loadable({
-  loader: () => import(/* webpackChunkName: "CaskVideoPlayer" */'components/CaskVideo'),
-  loading: LoadingSVGCentered
-});
-
 class SplashScreen extends Component {
   constructor(props) {
     super(props);
@@ -41,13 +34,11 @@ class SplashScreen extends Component {
     this.state = {
       error: '',
       showSplashScreen: false,
-      videoOpen: false,
       version: ''
     };
 
     this.doNotShowCheck;
     this.onClose = this.onClose.bind(this);
-    this.toggleVideo = this.toggleVideo.bind(this);
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
@@ -96,25 +87,14 @@ class SplashScreen extends Component {
     });
     this.resetWelcomeMessage();
   }
-  toggleVideo() {
-    this.setState({
-      videoOpen : !this.state.videoOpen
-    });
-  }
-  closeVideo() {
-    if (this.state.videoOpen) {
-      this.setState({
-        videoOpen: false
-      });
-    }
-  }
+
   toggleCheckbox() {
     this.doNotShowCheck = !this.doNotShowCheck;
   }
   render() {
 
-    let cardTitle = this.state.videoOpen ? '' : T.translate('features.SplashScreen.title');
-    let cardTitleTwo = this.state.videoOpen ? '' : T.translate('features.SplashScreen.titleTwo');
+    let cardTitle = T.translate('features.SplashScreen.title');
+    let cardTitleTwo = T.translate('features.SplashScreen.titleTwo');
 
     let cardHeader = (
       <div className="card-header-splash">
@@ -138,19 +118,12 @@ class SplashScreen extends Component {
             >
               <div className="text-xs-center">
                 <div className="splash-main-container">
-                {
-                  this.state.videoOpen ?
-                    <div className="cask-video-container">
-                      <CaskVideo />
-                    </div>
-                  :
-                    <div>
-                      <img width="150px" src="cdap_assets/img/cdaplogo_white.svg" />
-                      <h4>
-                        {T.translate('features.SplashScreen.intro-message')}
-                      </h4>
-                    </div>
-                }
+                  <div>
+                    <img width="150px" src="cdap_assets/img/cdaplogo_white.svg" />
+                    <h4>
+                      {T.translate('features.SplashScreen.intro-message')}
+                    </h4>
+                  </div>
                 </div>
 
                 <div className={'group'}>
@@ -197,9 +170,4 @@ class SplashScreen extends Component {
   }
 }
 
-const propTypes = {
-  openVideo: PropTypes.func
-};
-
-SplashScreen.propTypes = propTypes;
 export default SplashScreen;
