@@ -16,11 +16,17 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import ResourceCenterEntity from 'components/ResourceCenterEntity';
-import StreamCreateWithUploadWizard from 'components/CaskWizards/StreamCreateWithUpload';
+import LoadingSVGCentered from 'components/LoadingSVGCentered';
+import Loadable from 'react-loadable';
 import CreateStreamWithUploadStore from 'services/WizardStores/CreateStreamWithUpload/CreateStreamWithUploadStore';
 import NamespaceStore from 'services/NamespaceStore';
 import AbstractWizard from 'components/AbstractWizard';
 import T from 'i18n-react';
+
+var StreamCreateWithUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "StreamCreateWithUpload" */ 'components/CaskWizards/StreamCreateWithUpload'),
+  loading: LoadingSVGCentered
+});
 
 require('./ResourceCenter.scss');
 /*

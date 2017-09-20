@@ -15,35 +15,91 @@
  */
 
 import React, {PropTypes} from 'react';
-import StreamCreateWizard from 'components/CaskWizards/StreamCreate';
-import UploadDataWizard from 'components/CaskWizards/UploadData';
-import UploadDataUsecaseWizard from 'components/CaskWizards/UploadDataUsecase';
-import PublishPipelineWizard from 'components/CaskWizards/PublishPipeline';
-import PublishPipelineUsecaseWizard from 'components/CaskWizards/PublishPipelineUsecase';
-import InformationalWizard from 'components/CaskWizards/Informational';
-import ArtifactUploadWizard from 'components/CaskWizards/ArtifactUpload';
-import PluginArtifactUploadWizard from 'components/CaskWizards/PluginArtifactUpload';
-import ApplicationUploadWizard from 'components/CaskWizards/ApplicationUpload';
-import LibraryUploadWizard from 'components/CaskWizards/LibraryUpload';
-import MicroserviceUploadWizard from 'components/CaskWizards/MicroserviceUpload';
-
-import MarketArtifactUploadWizard from 'components/CaskWizards/MarketArtifactUpload';
-import MarketHydratorPluginUpload from 'components/CaskWizards/MarketHydratorPluginUpload';
-import OneStepDeployApp from 'components/CaskWizards/OneStepDeploy/OneStepDeployApp';
-import OneStepDeployPlugin from 'components/CaskWizards/OneStepDeploy/OneStepDeployPlugin';
-import OneStepDeployPluginUsecase from 'components/CaskWizards/OneStepDeploy/OneStepDeployPluginUsecase';
-import OneStepDeployAppUsecase from 'components/CaskWizards/OneStepDeploy/OneStepDeployAppUsecase';
-
+import LoadingSVGCentered from 'components/LoadingSVGCentered';
+import Loadable from 'react-loadable';
 import CreateStreamStore from 'services/WizardStores/CreateStream/CreateStreamStore';
 import UploadDataStore from 'services/WizardStores/UploadData/UploadDataStore';
 import PublishPipelineStore from 'services/WizardStores/PublishPipeline/PublishPipelineStore';
-import AddNamespaceWizard from 'components/CaskWizards/AddNamespace';
 import AddNamespaceStore from 'services/WizardStores/AddNamespace/AddNamespaceStore';
 import InformationalStore from 'services/WizardStores/Informational/InformationalStore';
 import ArtifactUploadStore from 'services/WizardStores/ArtifactUpload/ArtifactUploadStore';
 import ApplicationUploadStore from 'services/WizardStores/ApplicationUpload/ApplicationUploadStore';
 import OneStepDeployStore from 'services/WizardStores/OneStepDeploy/OneStepDeployStore';
 import MicroserviceUploadStore from 'services/WizardStores/MicroserviceUpload/MicroserviceUploadStore';
+
+var StreamCreateWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "StreamCreateWizard" */ 'components/CaskWizards/StreamCreate'),
+  loading: LoadingSVGCentered
+});
+
+var UploadDataWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "UploadDataWizard" */ 'components/CaskWizards/UploadData'),
+  loading: LoadingSVGCentered
+});
+var UploadDataUsecaseWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "UploadDataUsecaseWizard" */ 'components/CaskWizards/UploadDataUsecase'),
+  loading: LoadingSVGCentered
+});
+var PublishPipelineWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "PublishPipelineWizard" */ 'components/CaskWizards/PublishPipeline'),
+  loading: LoadingSVGCentered
+});
+var PublishPipelineUsecaseWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "PublishPipelineUsecaseWizard" */ 'components/CaskWizards/PublishPipelineUsecase'),
+  loading: LoadingSVGCentered
+});
+var InformationalWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "InformationalWizard" */ 'components/CaskWizards/Informational'),
+  loading: LoadingSVGCentered
+});
+var ArtifactUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "ArtifactUploadWizard" */ 'components/CaskWizards/ArtifactUpload'),
+  loading: LoadingSVGCentered
+});
+var PluginArtifactUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "PluginArtifactUploadWizard" */ 'components/CaskWizards/PluginArtifactUpload'),
+  loading: LoadingSVGCentered
+});
+var ApplicationUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "ApplicationUploadWizard" */ 'components/CaskWizards/ApplicationUpload'),
+  loading: LoadingSVGCentered
+});
+var LibraryUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "LibraryUploadWizard" */ 'components/CaskWizards/LibraryUpload'),
+  loading: LoadingSVGCentered
+});
+var MicroserviceUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "MicroserviceUploadWizard" */ 'components/CaskWizards/MicroserviceUpload'),
+  loading: LoadingSVGCentered
+});
+var MarketArtifactUploadWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "MarketArtifactUploadWizard" */ 'components/CaskWizards/MarketArtifactUpload'),
+  loading: LoadingSVGCentered
+});
+var MarketHydratorPluginUpload = Loadable({
+  loader: () => import(/* webpackChunkName: "MarketHydratorPluginUploadWizard" */ 'components/CaskWizards/MarketHydratorPluginUpload'),
+  loading: LoadingSVGCentered
+});
+var OneStepDeployApp = Loadable({
+  loader: () => import(/* webpackChunkName: "OneStepDeployWizard" */ 'components/CaskWizards/OneStepDeploy/OneStepDeployApp'),
+  loading: LoadingSVGCentered
+});
+var OneStepDeployPlugin = Loadable({
+  loader: () => import(/* webpackChunkName: "OneStepDeployWizard" */ 'components/CaskWizards/OneStepDeploy/OneStepDeployPlugin'),
+  loading: LoadingSVGCentered
+});
+var OneStepDeployPluginUsecase = Loadable({
+  loader: () => import(/* webpackChunkName: "OneStepDeployWizard" */ 'components/CaskWizards/OneStepDeploy/OneStepDeployPluginUsecase'),
+  loading: LoadingSVGCentered
+});
+var OneStepDeployAppUsecase = Loadable({
+  loader: () => import(/* webpackChunkName: "OneStepDeployWizard" */ 'components/CaskWizards/OneStepDeploy/OneStepDeployAppUsecase'),
+  loading: LoadingSVGCentered
+});
+var AddNamespaceWizard = Loadable({
+  loader: () => import(/* webpackChunkName: "AddNamespaceWizard" */ 'components/CaskWizards/AddNamespace'),
+  loading: LoadingSVGCentered
+});
 
 const WizardTypesMap = {
   'create_app': {

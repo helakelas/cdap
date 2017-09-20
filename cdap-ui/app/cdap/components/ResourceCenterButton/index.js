@@ -15,10 +15,17 @@
  */
 
 import React, {Component, PropTypes} from 'react';
-import PlusButtonModal from 'components/PlusButtonModal';
+import LoadingSVGCentered from 'components/LoadingSVGCentered';
+import Loadable from 'react-loadable';
 import PlusButtonStore from 'services/PlusButtonStore';
 import classnames from 'classnames';
 require('./ResourceCenterButton.scss');
+
+var PlusButtonModal = Loadable({
+  loader: () => import(/* webpackChunkName: "PlusButtonModal" */ 'components/PlusButtonModal'),
+  loading: LoadingSVGCentered
+});
+
 
 export default class ResourceCenterButton extends Component {
   constructor(props) {
