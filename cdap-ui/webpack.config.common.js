@@ -117,7 +117,8 @@ var webpackConfig = {
       'rx-dom',
       'react-dropzone',
       'react-redux',
-      'svg4everybody'
+      'svg4everybody',
+      'numeral'
     ]
   },
   module: {
@@ -128,7 +129,8 @@ var webpackConfig = {
     chunkFilename: '[name].js',
     path: __dirname + '/common_dist',
     library: 'CaskCommon',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    publicPath: '/common_assets/'
   },
   externals: {
     'react': {

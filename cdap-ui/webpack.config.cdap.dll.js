@@ -61,6 +61,8 @@ var webpackConfig = {
       'vega-lite',
       'vega-tooltip',
       'react-helmet',
+      'rx',
+      'rx-dom'
     ]
   },
   output: {
