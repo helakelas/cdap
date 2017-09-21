@@ -81,7 +81,7 @@ In general, this summarizes the authorization policies in CDAP:
 - A **delete** operation on an entity requires *ADMIN* on the entity. Note that if the deletion operation will delete
   multiple entities, *ADMIN* is required on all the entities. For example, delete on a namespace requires *ADMIN* on
   all entities in the namespace.
-- A **execute** operation on a program requires *EXECUTE* on the program.
+- An **execute** operation on a program requires *EXECUTE* on the program.
 - A **list** or **view** operation (such as listing or searching applications, datasets, streams,
   artifacts) only returns those entities that the logged-in user has at least one (*READ*,
   *WRITE*, *EXECUTE*, *ADMIN*) privilege on or on any of its descendants.
@@ -94,24 +94,14 @@ Additionally:
 - Upon successful creation/deletion of an entity, the privileges remain unaffected.
   It is the responsibility of the administrator to delete privileges from the authorization backend on entity deletion.
   If the privileges are not deleted and the entity is recreated the privileges will affect the enforcement on the entity.
-- More privileges are needed for the following operations in the following cases:
-    - Deploying an application with new artifact requires *ADMIN* on the artifact.
-    - Deploying an application with existing artifact requires *READ, WRITE, EXECUTE,* or *ADMIN* on the artifact.
-    - Deploying an application requires *ADMIN* privilege on all the datasets and streams that will be created
-      along with the app, and *ADMIN* privilege on the dataset module and types if there are custom datasets.
-    - Creating a dataset needs *ADMIN* privilege on the dataset module and types if it is a custom dataset.
-    - If no impersonation is involved, correct privileges on the streams and datasets needs to be given to *cdap* to allow
-      *cdap* accessing these entities.
-    - If impersonation is involved, *admin* privilege on the principal is required to create a namespace, deploy an app
-      create dataset or streams.
+- CDAP does **not** support hierarchical authorization enforcement, which means that privileges on each entity
+  are evaluated independently. CDAP has the concept of visibility, which means user will be able to view the entity if
+  the user has any of the privilege on the entity or any of its descendants. For example, user can see the application if the user has
+  *ADMIN* on the program. Note that visibility should not be confused with enforcement. In this case the user will not be
+  able to to perform *ADMIN* action on the application itself.
 
-CDAP does **not** support hierarchical authorization enforcement, which means that privileges on each entity
-are evaluated independently. CDAP has the concept of visibility, which means user will be able to view the entity if
-the user has any of the privilege on the entity or any of its descendants. For example, user can see the application if the user has
-*ADMIN* on the program. Note that visibility should not be confused with enforcement. In this case the user will not be
-able to to perform *ADMIN* action on the application itself.
-
-Authorization policies for various CDAP operations are listed in these tables:
+Authorization policies for various CDAP operations are listed in the following tables. Policies for more complex operations
+can be checked :ref:`below <security-authorization-deploying-app>`.
 
 .. _security-authorization-policies-namespaces:
 
@@ -210,7 +200,9 @@ Programs
    * - Get
      - At least one of *READ, WRITE, EXECUTE,* or *ADMIN*
    * - Resume/Suspend schedule
-     - *EXECUTE*
+     - *EXECUTE* on the program
+   * - Add/Delete/Update schedule
+     - *ADMIN* on the application
 
 .. _security-authorization-policies-datasets:
 
@@ -434,7 +426,7 @@ do the following steps:
 - create a new role ``ns1_administrator``
 
 - use the commands to grant *ADMIN* on these entities: ``namespace:ns1``, ``application:ns1.*``, ``program:ns1.*.*``,
-  ``artifact:ns1.*``, ``dataset:ns1.*``, ``stream: ns1.*``, ``dataset_type:ns1.*``, ``dataset_module:ns1.*``,
+  ``artifact:ns1.*``, ``dataset:ns1.*``, ``stream:ns1.*``, ``dataset_type:ns1.*``, ``dataset_module:ns1.*``,
   ``securekey:ns1.*`` and ``kerberosprincipal.*`` to the role ``ns1_administrator``
 
 - add ``ns1_administrator`` to group ``admin``
@@ -443,14 +435,130 @@ Note that:
 
 - Only users in sentry admin group can be used to grant/revoke the privileges, this property can be set or updated by
   changing property ``sentry.service.admin.group`` in sentry.
+- Since only sentry admin group can get roles from Sentry and then do enforce, the Sentry integration will by
+  default use group *cdap* to issue the enforce call. It is highly recommended to have group *cdap* in the admin group.
+  To use a different group, modify the value of ``security.authorization.extension.config.sentry.admin.group`` in CDAP. Note
+  that this value must be in ``sentry.service.admin.group`` in sentry
 - Any update to privileges will take some time to take effect based on the cache timeout. By default, the maximum
-  time will be 10 minutes.
+  time will be 10 minutes. This value can be changed by modifying the value of ``security.authorization.cache.ttl.secs`` in CDAP.
 
 .. _security-ranger-integration:
 
 Ranger Integration
 ------------------
 To use Apache Ranger as the authorization backend, please refer to `CDAP Ranger Extension <https://github.com/caskdata/cdap-security-extn/wiki/CDAP-Ranger-Extension>`_
+
+
+.. _security-authorization-policies-complex-operations:
+
+Policy For Complex Operations
+=============================
+Some complex operations will require multiple privileges. For example, deploying an application can create streams and datasets.
+In this case, privileges are required for all the entities that will get created. Wildcard policies will be helpful to
+manage the privileges in these cases.
+
+Detailed authorization policies for complex CDAP operations are listed below:
+
+.. _security-authorization-deploying-app:
+
+Deploy App
+----------
+The privileges required to deploy an application can vary based on various conditions. In general, the requesting user always
+need *ADMIN* privilege on the application and some privilege on the artifact depending on the existence of the artifact.
+The requesting user will need *ADMIN* privilege on datasets, dataset types and streams that will get created along with
+the app if no impersonation is involved. If the app is impersonated as some other user, the requesting user will need
+*ADMIN* privilege on the kerberos principal of that user and the impersonated user will need *ADMIN* privilege to create
+datasets and streams. The following table shows the privileges needed under certain condition, note that the entity name
+in the table can be replaced with * and ? to represent wildcard policy:
+
+.. list-table::
+   :widths: 30 50 40
+   :header-rows: 1
+
+   * - Condition
+     - Privileges Required
+     - Entity-id For Grant
+   * - Always
+     - Requesting user: *ADMIN* on the application
+     - application:<namespace-name>.<application-name>
+   * - Using new artifact
+     - Requesting user: *ADMIN* on the artifact
+     - artifact:<namespace-name>.<artfiact-name>
+   * - Using existing artifact
+     - Requesting user: Any privilege of *READ, WRITE, EXECUTE,* or *ADMIN* on the artifact
+     - artifact:<namespace-name>.<artfiact-name>
+   * - Creating datasets and streams without impersonation
+     - Requesting user: *ADMIN* on the datasets and streams
+     - dataset:<namespace-name>.<dataset-name> and stream:<namespace>.<stream-name>
+   * - Creating custom datasets without impersonation
+     - Requesting user: *ADMIN* on the dataset modules and types
+     - dataset_module:<namespace-name>.<dataset-module-name> and dataset_type:<namespace-name>.<dataset-type-name>
+   * - Create impersonated application
+     - Requesting user: *ADMIN* on the kerberos principal of the impersonated user
+     - kerberosprincipal:<principal-name>
+   * - Creating datasets and streams with impersonation
+     - Impersonated user: *ADMIN* on the datasets and streams
+     - dataset:<namespace-name>.<dataset-name> and stream:<namespace>.<stream-name>
+   * - Creating custom datasets with impersonation
+     - Impersonated user: *ADMIN* on the dataset modules and types
+     - dataset_module:<namespace-name>.<dataset-module-name> and dataset_type:<namespace-name>.<dataset-type-name>
+
+
+.. _security-authorization-executing-programs:
+
+Execute Programs/Hydrator Pipelines
+-----------------------------------
+To execute a program or a pipeline, the user will need *EXECUTE* privilege on it. If there is no impersonation, the program
+will be running as CDAP master user. If impersonation is involved, the program will be running as the impersonated user.
+In any case, the user who is running the program needs to have the corresponding privileges to access the all the streams
+and datasets that will be used during program execution. The following table shows the privileges needed under certain condition,
+note that the entity name in the table can be replaced with * and ? to represent wildcard policy:
+
+.. list-table::
+   :widths: 30 50 40
+   :header-rows: 1
+
+   * - Condition
+     - Privileges Required
+     - Entity-id For Grant
+   * - Always
+     - Requesting user: *EXECUTE* on the program
+     - program:<namespace-name>.<app-name>.<program-type>.<program-name> or program:<namespace-name>.<app-name>.* for all
+       programs in the application
+   * - READ from existing streams and datasets
+     - Program runner: *READ* on the streams and datasets
+     - dataset:<namespace-name>.<dataset-name> and stream:<namespace>.<stream-name>
+   * - WRITE to existing streams and datasets
+     - Program runner: *WRITE* on the streams and datasets
+     - dataset:<namespace-name>.<dataset-name> and stream:<namespace>.<stream-name>
+   * - Creating datasets and read/write on the datasets:
+     - Program runner: *ADMIN*, *READ*/*WRITE* on the datasets
+     - dataset:<namespace-name>.<dataset-name>
+   * - Creating local datasets, *READ*/*WRITE* on local datasets
+     - Program runner: *ADMIN*, *READ*/*WRITE* on local datasets, the run-id will be suffixed to the local dataset names,
+       so wildcard policies will be needed.
+     - dataset:<namespace-name>.<local-dataset-name>*
+   * - Accessing external source/sink, i.e, accessing datasets outside CDAP (only for hydrator pipelines)
+     - Program runner: *ADMIN*, *READ* and *WRITE* on the external datasets. The name of the external datasets will be same
+       as the reference name of the source/sink.
+     - dataset:<namespace-name>.<reference-name>
+
+.. _security-authorization-enable-dataprep:
+
+Enable DataPrep Service
+-----------------------
+To enable the DataPrep service, these privileges are needed:
+   - Requesting user: *EXECUTE* on entity ``program:<namespace-name>.dataprep.service.service``
+   - Without impersonation:
+       - Requesting user: *ADMIN* on entity ``dataset:<namespace-name>.workspace``, ``dataset:<namespace-name>.dataprep``,
+         ``dataset:<namespace-name>.dataprepfs``, ``dataset_type:<namespace-name>.*WorkspaceDataset`` and
+         ``dataset_module:<namespace-name>.*WorkspaceDataset``
+       - CDAP master user: *READ*, *WRITE* on entity ``dataset:<namespace-name>.workspace``, ``dataset:<namespace-name>.dataprep`` and
+         ``dataset:<namespace-name>.dataprepfs``
+   - With impersonation:
+       - Impersonated user: *ADMIN*, *READ* and *WRITE*  on entity ``dataset:<namespace-name>.workspace``, ``dataset:<namespace-name>.dataprep`` and
+         ``dataset:<namespace-name>.dataprepfs``. *ADMIN* on ``dataset_type:<namespace-name>.*WorkspaceDataset`` and
+         ``dataset_module:<namespace-name>.*WorkspaceDataset``
 
 
 .. _security-differences-between-new-and-old-model:
