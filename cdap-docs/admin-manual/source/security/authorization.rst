@@ -59,19 +59,23 @@ individual extensions for configuring properties specific to that extension:
 :ref:`Security extension properties <appendix-cdap-default-security>`, which are specified
 in ``cdap-site.xml``, begin with the prefix ``security.authorization.extension.config``.
 
+When CDAP is first started with authorization enabled, no users are granted privileges on
+any CDAP entities. Without any privileges, CDAP will not be able to create the default namespace.
+To create the default namespace, grant *ADMIN* on default namespace to the CDAP master user.
+The default namespace will get created in several minutes automatically.
+
 
 .. _security-authorization-policies:
 
 Authorization Policies
 ======================
 Currently, CDAP allows users to enforce authorization for *READ*, *WRITE*, *EXECUTE*, and
-*ADMIN* operations. The authorization model requires pre-granted privileges on entities for all
-operations.
+*ADMIN* operations.
 
 In general, this summarizes the authorization policies in CDAP:
 
-- A **create** operation on an entity requires *ADMIN* on the entity. Privileges need to be pre-granted to
-  create the entity. For example, creating a namespace requires *ADMIN* on the namespace itself.
+- A **create** operation on an entity requires *ADMIN* on the entity. The *ADMIN* privilege needs to be granted before
+  the entity can be created. For example, creating a namespace requires *ADMIN* on the namespace.
 - A **read** operation (such as reading from a dataset or a stream) on an entity requires
   *READ* on the entity.
 - A **write** operation (such as writing to a dataset or a stream) on an entity requires
@@ -80,7 +84,7 @@ In general, this summarizes the authorization policies in CDAP:
   the entity.
 - A **delete** operation on an entity requires *ADMIN* on the entity. Note that if the deletion operation will delete
   multiple entities, *ADMIN* is required on all the entities. For example, delete on a namespace requires *ADMIN* on
-  all entities in the namespace.
+  all entities in the namespace, and the namespace itself.
 - An **execute** operation on a program requires *EXECUTE* on the program.
 - A **list** or **view** operation (such as listing or searching applications, datasets, streams,
   artifacts) only returns those entities that the logged-in user has at least one (*READ*,
@@ -93,12 +97,9 @@ Additionally:
 
 - Upon successful creation/deletion of an entity, the privileges remain unaffected.
   It is the responsibility of the administrator to delete privileges from the authorization backend on entity deletion.
-  If the privileges are not deleted and the entity is recreated the privileges will affect the enforcement on the entity.
+  If the privileges are not deleted and the entity is recreated, the old privileges will be retained for the new entity
 - CDAP does **not** support hierarchical authorization enforcement, which means that privileges on each entity
-  are evaluated independently. CDAP has the concept of visibility, which means user will be able to view the entity if
-  the user has any of the privilege on the entity or any of its descendants. For example, user can see the application if the user has
-  *ADMIN* on the program. Note that visibility should not be confused with enforcement. In this case the user will not be
-  able to to perform *ADMIN* action on the application itself.
+  are evaluated independently.
 
 Authorization policies for various CDAP operations are listed in the following tables. Policies for more complex operations
 can be checked :ref:`below <security-authorization-deploying-app>`.
@@ -346,15 +347,9 @@ Kerberos Principal
 
 .. _security-pre-grant-wildcard-privilege:
 
-Pre-grant and Wildcard Privileges
-=================================
-The new authorization model requires pre-granted privilege on all entity for any operation.
-When CDAP is first started with authorization enabled, no users are granted privileges on
-any CDAP entities. Without any privileges, CDAP will not be able to create the default namespace.
-To create the default namespace, grant *ADMIN* on default namespace to the CDAP master user.
-The default namespace will get created in several minutes automatically.
-
-To pre-grant the privilege, wildcard can be used to minimize the burden of granting privileges on all entities.
+Wildcard Privileges
+===================
+Wildcard privileges can be used to minimize the burden of granting privileges on all entities.
 Detailed ways of granting privileges can be found in the following sections for different authorization backends.
 
 .. _security-sentry-integration:
